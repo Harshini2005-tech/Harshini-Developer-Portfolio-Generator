@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head><title>Create Portfolio</title><link rel="stylesheet" href="style.css"></head>
+<body>
+    <div class="card">
+        <h1 class="main-title">Create Portfolio</h1>
+        <p style="text-align: center; color: #d0bfff;">Enter your details below to generate your beautiful portfolio.</p>
+        
+        <form id="createForm">
+            <!-- Basic Details -->
+            <label>Full Name</label>
+            <input type="text" id="name" placeholder=" " required>
+            
+            <label>Email ID</label>
+            <input type="email" id="email" placeholder="" required>
+            
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="+1 234 567 890" required>
+            
+            <!-- About & Skills -->
+            <label>About Me</label>
+            <textarea id="about" rows="3" placeholder="I am a passionate developer focused on building..." required></textarea>
+            
+            <label>Skills</label>
+            <input type="text" id="skills" placeholder="Java, HTML, CSS, JavaScript (Comma separated)" required>
+
+            <!-- Experience & Education -->
+            <label>Education</label>
+            <textarea id="education" rows="2" placeholder="B.S. Computer Science, Stanford University (2018 - 2022)"></textarea>
+
+            <label>Work Experience</label>
+            <textarea id="experience" rows="3" placeholder="Software Engineer at Netflix (June 2022 - Present)..."></textarea>
+
+            <!-- Projects & Links -->
+            <label>Key Projects</label>
+            <textarea id="projects" rows="3" placeholder="1. Weather App with React. 2. Task Manager API with Spring Boot..."></textarea>
+
+            <label>LinkedIn Link</label>
+            <input type="url" id="linkedinLink" placeholder="https://linkedin.com/in/username">
+
+            <label>GitHub Link</label>
+            <input type="url" id="githubLink" placeholder="https://github.com/username">
+
+            <!-- Submit -->
+            <button type="button" onclick="submitPortfolio()">Create My Portfolio</button>
+        </form>
+    </div>
+
+    <script>
+        async function submitPortfolio() {
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                about: document.getElementById('about').value,
+                skills: document.getElementById('skills').value,
+                education: document.getElementById('education').value,
+                experience: document.getElementById('experience').value,
+                projects: document.getElementById('projects').value,
+                githubLink: document.getElementById('githubLink').value,
+                linkedinLink: document.getElementById('linkedinLink').value
+            };
+
+            // Send to Spring Boot Backend
+            await fetch('http://localhost:8080/api/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            // Save email locally so the dashboard knows who we are!
+            localStorage.setItem('userEmail', data.email);
+            window.location.href = 'minimal-dashboard.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>View Portfolio</title><link rel="stylesheet" href="style.css"></head>
+<body>
+    <div class="card" style="max-width: 800px; padding: 40px;">
+        <button onclick="window.location.href='minimal-dashboard.html'" style="width: auto; padding: 8px 20px; font-size: 14px; float: right; background: rgba(255,255,255,0.2);">Dashboard</button>
+        <div style="clear: both;"></div>
+
+        <!-- Header -->
+        <div style="text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 25px; margin-bottom: 30px;">
+            <h1 id="portName" style="font-size: 3.5em; margin: 0; color: #ffd1ff;"></h1>
+            
+            <p style="color: #cca8ff; font-size: 1.2em; margin: 10px 0;">
+                <span id="portEmail"></span> &nbsp; | &nbsp; 
+                <span id="portPhone"></span>
+            </p>
+
+            <div id="socialLinks" style="margin-top: 20px; font-size: 1.1em;"></div>
+        </div>
+
+        <!-- About section -->
+        <h2 style="color: #cca8ff;">About Me</h2>
+        <p id="portAbout" style="line-height: 1.8; font-size: 1.1em; color: #f4ecff;"></p>
+
+        <!-- Dynamic elements inside content boxes for structure -->
+        <h2 style="color: #cca8ff; margin-top: 35px;">My Skills</h2>
+        <div id="portSkills" style="margin-bottom: 35px;"></div>
+
+        <h2 style="color: #cca8ff;">Education</h2>
+        <div class="content-box">
+            <p id="portEducation" style="margin: 0; color: #f4ecff;"></p>
+        </div>
+
+        <h2 style="color: #cca8ff;">Professional Experience</h2>
+        <div class="content-box">
+            <p id="portExperience" style="margin: 0; line-height: 1.6; color: #f4ecff;"></p>
+        </div>
+
+        <h2 style="color: #cca8ff;">Technical Projects</h2>
+        <div class="content-box">
+            <p id="portProjects" style="margin: 0; line-height: 1.6; color: #f4ecff;"></p>
+        </div>
+    </div>
+
+    <script>
+        const email = localStorage.getItem('userEmail');
+        
+        fetch(`http://localhost:8080/api/portfolio/${email}`)
+            .then(res => res.json())
+            .then(data => {
+                // Populate Text Details
+                document.getElementById('portName').textContent = data.name;
+                document.getElementById('portEmail').textContent = "✉️ " + data.email;
+                document.getElementById('portPhone').textContent = "📞 " + data.phone;
+                document.getElementById('portAbout').textContent = data.about;
+                
+                document.getElementById('portEducation').textContent = data.education || 'N/A';
+                document.getElementById('portExperience').textContent = data.experience || 'N/A';
+                document.getElementById('portProjects').textContent = data.projects || 'N/A';
+                
+                // Add tag bubbles for skills
+                const skillContainer = document.getElementById('portSkills');
+                data.skills.split(',').forEach(skill => {
+                    if (skill.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'skill-tag';
+                        span.textContent = skill.trim();
+                        skillContainer.appendChild(span);
+                    }
+                });
+
+                // Add robust social link buttons
+                const socialContainer = document.getElementById('socialLinks');
+                if (data.linkedinLink) {
+                    socialContainer.innerHTML += `<a href="${data.linkedinLink}" target="_blank" style="margin-right: 20px; color: #b7a4db;">🔗 LinkedIn</a>`;
+                }
+                if (data.githubLink) {
+                    socialContainer.innerHTML += `<a href="${data.githubLink}" target="_blank" style="color: #b7a4db;">💻 GitHub</a>`;
+                }
+            });
+    </script>
+</body>
+
+
+</html>
